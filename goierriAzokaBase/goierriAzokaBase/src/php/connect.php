@@ -1,23 +1,9 @@
 <?php
+
 function getEnvVariables()
 {
+    $env = parse_ini_file(APP_DIR . '/.env');
 
-    $envPath = __DIR__ . '/../../../.env';
-
-    
-    if (!file_exists($envPath)) {
-        die("Error: .env file not found at $envPath");
-    }
-
-    
-    $env = parse_ini_file($envPath);
-
-   
-    if ($env === false) {
-        die("Error: Unable to load environment configuration. Please check the .env file format.");
-    }
-
-    
     $servername = $env["SERVER_NAME"];
     $dbName = $env["DB_NAME"];
     $username = $env["USERNAME"];
@@ -76,19 +62,12 @@ function getZikloa($id)
     $conn = new mysqli($servername, $username, $password, $dbName);
 
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Conexión fallida: " . $conn->connect_error);
     }
 
-    // Sanitize the ID to prevent SQL injection
-    $id = intval($id);
-
-    $sql = "SELECT * FROM zikloak WHERE id=$id ORDER BY laburbildura ASC";
+    $sql = "SELECT * FROM " . $dbName . ".zikloak WHERE id=".$id." ORDER BY laburbildura ASC";
 
     $result = $conn->query($sql);
-
-    if ($result === false) {
-        die("SQL Error: " . $conn->error . " | Query: " . $sql);
-    }
 
     return $result;
 }
