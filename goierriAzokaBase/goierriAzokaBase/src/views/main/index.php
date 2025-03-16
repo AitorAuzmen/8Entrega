@@ -1,6 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        background-color: <?= $mainColor ?>;
+    }
+
+    footer {
+        background-color: <?= $footerColor ?>;
+    }
+</style>
+</head>
+<body>
 <?php
 
-$env = parse_ini_file(__DIR__ . '/../../../.env');
+$xmlFilePath = __DIR__ . '/../../../conf.xml'; // Adjust the path if necessary
+
+// Check if the conf.xml file exists
+if (!file_exists($xmlFilePath)) {
+    die("Error: conf.xml file not found at $xmlFilePath");
+}
+
+// Load the XML file
+$config = simplexml_load_file($xmlFilePath);
+if ($config === false) {
+    die("Error: Unable to load conf.xml");
+}
+
+// Get the colors
+$mainColor = $config->mainColor;
+$footerColor = $config->footerColor;
+
+$envPath = __DIR__ . '/../../../../.env'; // Adjusted path to go one level higher
+
+
+$env = parse_ini_file($envPath);
+
 
 $APP_DIR = $env["APP_DIR"];
 
@@ -19,6 +54,7 @@ $scanned = true;
 $kurtsoa = isset($_GET["kurtsoa"]) ? $_GET["kurtsoa"] : 1;
 
 $result = getZikloa($kurtsoa);
+
 
 if ($result->num_rows > 0) {
 
@@ -155,3 +191,5 @@ if ($result->num_rows > 0) {
 }
 require_once(APP_DIR  . '/src//views/parts/layouts/layoutBottom.php');
 ?>
+</body>
+</html>
