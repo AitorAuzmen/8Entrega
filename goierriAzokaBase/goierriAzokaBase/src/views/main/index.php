@@ -75,6 +75,25 @@ if ($result->num_rows > 0) {
                     </a>
                 </span>
             </div>
+            <div>
+    <!-- Apartado para comentarios en euskera -->
+    <div class="comments_section">
+    <h3>Iruzkinak</h3>
+    <form id="commentForm" method="post" action="">
+        <textarea id="comments" name="comments" rows="4" cols="50" placeholder="Zure iruzkina hemen idatzi..." required></textarea>
+        <br>
+        <button type="submit" id="submitComment">Iruzkinak bidali</button>
+    </form>
+
+    <?php
+// Definir la ruta del archivo XML
+$xmlFile = 'komentarioak.xml';
+
+
+
+</div>
+
+</div>
             <?php
             if ($scanned) {
             ?>
