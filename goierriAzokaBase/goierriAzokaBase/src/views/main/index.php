@@ -89,7 +89,25 @@ if ($result->num_rows > 0) {
 // Definir la ruta del archivo XML
 $xmlFile = 'komentarioak.xml';
 
+// Verificar si se envió el formulario
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comments'])) {
+    $comment = $_POST['comments']; // Guardar el comentario tal cual
 
+    // Si el archivo XML existe, cargarlo. Si no, crearlo.
+    if (file_exists($xmlFile)) {
+        $xml = simplexml_load_file($xmlFile);
+    } else {
+        $xml = new SimpleXMLElement('<comments></comments>');
+    }
+
+    // Agregar un nuevo comentario
+    $newComment = $xml->addChild('comment');
+    $newComment->addChild('text', $comment);
+
+    // Guardar los cambios en el archivo XML
+    file_put_contents($xmlFile, $xml->asXML());
+}
+?>
 
 </div>
 
