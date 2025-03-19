@@ -1,2 +1,9 @@
 <?xml version="1.0"?>
-<comments><comment><text>guffy</text></comment><comment><text>guffy</text></comment><comment><text>guffy</text></comment><comment><text>l</text></comment><comment><text>l</text></comment><comment><text>l</text></comment><comment><text>dsdsd</text></comment></comments>
+<comments>
+    <comment kurtsoa="1">
+        <text>Kaixo, egun on</text>
+    </comment>
+    <comment kurtsoa="3">
+        <text>Hau 2SG2 da</text>
+    </comment>
+</comments>

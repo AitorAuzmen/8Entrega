@@ -77,37 +77,102 @@ if ($result->num_rows > 0) {
             </div>
             <div>
     <!-- Apartado para comentarios en euskera -->
-    <div class="comments_section">
-    <h3>Iruzkinak</h3>
-    <form id="commentForm" method="post" action="">
-        <textarea id="comments" name="comments" rows="4" cols="50" placeholder="Zure iruzkina hemen idatzi..." required></textarea>
-        <br>
-        <button type="submit" id="submitComment">Iruzkinak bidali</button>
-    </form>
+    
 
     <?php
-// Definir la ruta del archivo XML
+
+$kurtsoa = isset($_GET["kurtsoa"]) ? $_GET["kurtsoa"] : 1;
+
 $xmlFile = 'komentarioak.xml';
 
-// Verificar si se envió el formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comments'])) {
-    $comment = $_POST['comments']; // Guardar el comentario tal cual
 
-    // Si el archivo XML existe, cargarlo. Si no, crearlo.
+
+
+
+$kurtsoa = isset($_GET["kurtsoa"]) ? $_GET["kurtsoa"] : 1; 
+
+
+$xmlFile = "komentarioak.xml";
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comments'])) {
+    $comment = trim($_POST['comments']);
+
+    
     if (file_exists($xmlFile)) {
         $xml = simplexml_load_file($xmlFile);
     } else {
         $xml = new SimpleXMLElement('<comments></comments>');
     }
 
-    // Agregar un nuevo comentario
+    
     $newComment = $xml->addChild('comment');
-    $newComment->addChild('text', $comment);
+    $newComment->addChild('text', htmlspecialchars($comment));
+    $newComment->addAttribute('kurtsoa', $kurtsoa); 
 
-    // Guardar los cambios en el archivo XML
+    
     file_put_contents($xmlFile, $xml->asXML());
 }
+
+
+$comments = [];
+if (file_exists($xmlFile)) {
+    $xml = simplexml_load_file($xmlFile);
+    foreach ($xml->comment as $comment) {
+        if ((int) $comment['kurtsoa'] === (int) $kurtsoa) { 
+            $comments[] = [
+                'text' => (string) $comment->text
+            ];
+        }
+    }
+}
 ?>
+
+
+<br>
+<button class="toggleComments" data-id="<?= $kurtsoa ?>">Ikusi Iruzkinak</button>
+
+
+<div class="comments_section" id="commentsSection_<?= $kurtsoa ?>" style="display: none;">
+    <h3>Iruzkinak (<?= $izena ?>)</h3>
+    <form class="commentForm" method="post">
+        <textarea name="comments" rows="4" cols="50" placeholder="Zure iruzkina hemen idatzi..." required></textarea>
+        <br>
+        <button type="submit">Iruzkinak bidali</button>
+        <input type="hidden" name="kurtsoa" value="<?= $kurtsoa ?>">
+    </form>
+
+    <div class="responses">
+        <h4>Iruzkinak</h4>
+        <?php if (!empty($comments)): ?>
+            <ul>
+                <?php foreach ($comments as $comment): ?>
+                    <li></strong> <?= $comment['text'] ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>Oraindik ez dago iruzkinik.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll(".toggleComments").forEach(button => {
+    button.addEventListener("click", function() {
+        var sectionId = "commentsSection_" + this.getAttribute("data-id");
+        var commentsDiv = document.getElementById(sectionId);
+        if (commentsDiv.style.display === "none") {
+            commentsDiv.style.display = "block";
+            this.textContent = "Ezkutatu Iruzkinak";
+        } else {
+            commentsDiv.style.display = "none";
+            this.textContent = "Ikusi Iruzkinak";
+        }
+    });
+});
+</script>
+
+
 
 </div>
 
