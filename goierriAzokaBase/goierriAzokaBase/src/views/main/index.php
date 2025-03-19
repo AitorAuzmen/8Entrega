@@ -76,7 +76,7 @@ if ($result->num_rows > 0) {
                 </span>
             </div>
             <div>
-    <!-- Apartado para comentarios en euskera -->
+    
     
 
     <?php
